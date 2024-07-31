@@ -52,6 +52,6 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
-CMD /entrypoint.sh && bash /bootstrap.sh
+CMD bash /entrypoint.sh && bash /bootstrap.sh
 
 VOLUME ["/scripts/pnpm_store" , "/scripts/npm-global"]
