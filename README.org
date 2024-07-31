@@ -1,0 +1,15 @@
+#+title: fnm docker
+
+
+build
+
+#+begin_src shell
+sudo docker build  --tag fed-docker-fnm .
+#+end_src
+
+
+use
+
+#+begin_src
+sudo docker run -e PUID=$(id -u) -e PGID=$(id -g) -v $PWD/app:/app -v $PWD/pnpm_store:/config/pnpm_store -it fed-docker-fnm bash
+#+end_src
