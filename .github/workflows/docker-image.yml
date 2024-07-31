@@ -15,8 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag fed-docker-fnm:$(date +%s)
+      run: docker build . --file Dockerfile --tag fed-docker-fnm:latest
     - name: Create Folder
       run: mkdir -p ./app/ && mkdir -p ./pnpm_store
     - name: Test Docker image
-      run: docker run -e PUID=$(id -u) -e PGID=$(id -g) -v $PWD/app:/app -v $PWD/pnpm_store:/config/pnpm_store docker.io/library/fed-docker-fnm
+      run: docker run -e PUID=$(id -u) -e PGID=$(id -g) -v $PWD/app:/app -v $PWD/pnpm_store:/config/pnpm_store fed-docker-fnm:latest
