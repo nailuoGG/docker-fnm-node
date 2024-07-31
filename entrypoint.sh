@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 PUID=${PUID:-911}
 PGID=${PGID:-911}
