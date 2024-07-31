@@ -19,4 +19,4 @@ jobs:
     - name: Create Folder
       run: mkdir -p ./app/ && mkdir -p ./pnpm_store
     - name: Test Docker image
-      run: docker run -e PUID=$(id -u) -e PGID=$(id -g) -v $PWD/app:/app -v $PWD/pnpm_store:/config/pnpm_store -it fed-docker-fnm bash
+      run: docker run -e PUID=$(id -u) -e PGID=$(id -g) -v $PWD/app:/app -v $PWD/pnpm_store:/config/pnpm_store fed-docker-fnm
