@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-c"]
 # 安装必须的依赖 curl unzip 更新证书
 RUN set -eux; \
     apt-get update && \
-    apt-get install curl unzip wget git ca-certificates -y --no-install-recommends; \
+    apt-get install curl unzip wget git ca-certificates bash -y --no-install-recommends; \
     useradd -u 666 -U -d /config -s /bin/false abc && \
     usermod -G users abc &&  \
     mkdir -p \
@@ -52,6 +52,6 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
-CMD /entrypoint.sh && bash  /app/run.sh
+CMD /entrypoint.sh && bash /bootstrap.sh
 
 VOLUME ["/scripts/pnpm_store" , "/scripts/npm-global"]
