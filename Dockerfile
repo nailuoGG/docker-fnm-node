@@ -7,8 +7,8 @@ SHELL ["/bin/bash", "-c"]
 RUN set -eux; \
     apt-get update && \
     apt-get install curl unzip wget git ca-certificates bash -y --no-install-recommends; \
-    useradd -u 666 -U -d /config -s /bin/false abc && \
-    usermod -G users abc &&  \
+    useradd -u 666 -U -d /config -s /bin/false jenkins && \
+    usermod -G users jenkins &&  \
     mkdir -p \
     /app \
     /config \
@@ -21,7 +21,7 @@ RUN set -eux; \
 ADD fnm-install.sh /scripts
 
 RUN chmod +x /scripts/fnm-install.sh && \
-    chown abc:abc /scripts/fnm-install.sh
+    chown jenkins:jenkins /scripts/fnm-install.sh
 
 RUN mkdir -p /config/.fnm
 

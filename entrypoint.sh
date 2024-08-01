@@ -3,14 +3,14 @@
 PUID=${PUID:-911}
 PGID=${PGID:-911}
 
-groupmod -o -g "$PGID" abc
-usermod -o -u "$PUID" abc
+groupmod -o -g "$PGID" jenkins
+usermod -o -u "$PUID" jenkins
 
-groupmod -o -g "$PGID" abc
-usermod -o -u "$PUID" abc
+groupmod -o -g "$PGID" jenkins
+usermod -o -u "$PUID" jenkins
 
-chown -R abc:abc /app
-chown -R abc:abc /config
-chown -R abc:abc /scripts
+chown -R jenkins:jenkins /app
+chown -R jenkins:jenkins /config
+chown -R jenkins:jenkins /scripts
 
 eval "$(fnm env --use-on-cd)"
