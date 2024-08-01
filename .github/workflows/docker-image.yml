@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  build:
+  build-ubuntu:
 
     runs-on: ubuntu-latest
 
@@ -21,7 +21,7 @@ jobs:
     - name: Test Docker image
       run: docker run -e PUID=$(id -u) -e PGID=$(id -g) -v $PWD/app:/app -v $PWD/pnpm_store:/config/pnpm_store fed-docker-fnm:latest
 
-
+  build-and-test-centos:
     runs-on: ubuntu-latest
     container: 'centos:latest'
 
