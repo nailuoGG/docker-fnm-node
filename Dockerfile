@@ -31,8 +31,10 @@ RUN bash /scripts/fnm-install.sh -d /scripts/.fnm
 ENV PATH=/scripts/.fnm:$PATH
 
 # 处理fnm的环境变量
-RUN echo "eval \"\$(fnm env --use-on-cd)\"" >> /config/.bashrc
+RUN echo "eval \"\$(fnm env --use-on-cd)\"" >> ~/.bashrc
 COPY .npmrc /config/
+
+COPY .npmrc ~/
 
 # 切换工作目录
 WORKDIR /app
