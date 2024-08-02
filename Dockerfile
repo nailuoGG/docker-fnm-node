@@ -31,7 +31,7 @@ RUN set -eux; \
 # 安装 fnm 管理多个node版本
 COPY fnm-install.sh /scripts
 # 安装pnpm
-COPY pnpm-install.sh /scripts
+#COPY pnpm-install.sh /scripts
 # 路径得写完整
 COPY .npmrc /config/
 # 镜像启动入口
