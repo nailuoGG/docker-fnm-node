@@ -76,8 +76,10 @@ RUN eval "$(fnm env)" && \
 # 镜像启动入口
 COPY entrypoint.sh /scripts/entrypoint.sh
 
+# 最后切换回来，在启动容器时需要用root权限更改目录权限，然后再用gosu切换jenkins用户执行bootstrap.sh
 USER root
-# 用bash跑就不用加权限了
+
+# 用bash跑就不用加执行权限了
 CMD bash /scripts/entrypoint.sh
 
 VOLUME ["/scripts/pnpm_store"]
