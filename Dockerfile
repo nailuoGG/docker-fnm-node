@@ -4,7 +4,9 @@ MAINTAINER nailuoGG <nailuogg@gmail.com>
 SHELL ["/bin/bash", "-c"]
 
 RUN sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
-# 安装gosu工具，用于切换到用户来执行命令 # https://github.com/tianon/gosu/blob/master/INSTALL.md
+
+# Install gosu tool to switch to user for executing commands
+# https://github.com/tianon/gosu/blob/master/INSTALL.md
 RUN set -eux; \
   apt-get update; \
   apt-get install -y gosu; \
@@ -12,10 +14,10 @@ RUN set -eux; \
   apt-get clean && \
   gosu nobody true
 
-# 安装必须的依赖，创建需要的目录sd
-# /app 是 git 工程，内容等于Jenkins上的工作区，例如 git clone https://github.com/xxxxxx.git app
-# /config 主要是镜像内使用的各种配置文件
-# /scripts 部分目录需要挂在到volume上
+# Install necessary dependencies and create needed directories
+# /app is the git project, contents equal to Jenkins workspace, e.g. git clone https://github.com/xxxxxx.git app
+# /config main configuration files used inside the image
+# /scripts part of directories need to be mounted as a volume
 RUN set -eux; \
     apt-get update && \
     apt-get install curl unzip wget git ca-certificates bash -y --no-install-recommends; \
@@ -29,24 +31,27 @@ RUN set -eux; \
     apt-get autoremove && \
     apt-get clean
 
-# 安装 fnm 管理多个node版本
+# Install fnm to manage multiple node versions
 COPY fnm-install.sh /scripts
-# 安装pnpm
-#COPY pnpm-install.sh /scripts
-# 路径得写完整
+
+# Install pnpm
+# COPY pnpm-install.sh /scripts
+
+# Copy .npmrc file to /config directory
 COPY .npmrc /config/
-# 镜像启动入口
+
+# Set image startup entry point
 COPY entrypoint.sh /scripts/entrypoint.sh
 
-#设置权限
+# Set permissions
 RUN chown -R jenkins:jenkins /app && \
     chown -R jenkins:jenkins /config && \
     chown -R jenkins:jenkins /scripts
 
-# 切换到Jenkins用户，防止
+# Switch to Jenkins user to prevent issues
 USER jenkins
 
-# 安装fnm，用来管理node版本
+# Install fnm and manage node versions
 RUN bash /scripts/fnm-install.sh -d /scripts/.fnm
 
 ENV PNPM_VERSION=7.33.5 \
@@ -58,29 +63,29 @@ ENV PATH=/scripts/.fnm:$PNPM_HOME:$PATH
 RUN echo "export PATH=${PATH}" >> /config/.bashrc
 RUN echo "eval \"\$(fnm env --use-on-cd)\"" >> /config/.bashrc
 
-# 切换工作目录
+# Set working directory to /app
 WORKDIR /app
 
-# 安装pnpm
+# Install pnpm
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" PNPM_VERSION="${PNPM_VERSION}" bash - && \
     mkdir -p /scripts/pnpm_store && \
     pnpm config set store-dir /scripts/pnpm_store
 
-# 使用fnm安装node的多个版本，想要啥版本自己加
+# Install multiple node versions using fnm
 RUN eval "$(fnm env)" && \
     fnm install 14 && fnm install 22
 
-# 尝试安装全局工具
+# Try to install global tools
 RUN cd ~/&& pwd && ls -la &&  \
     eval "$(fnm env)" &&  \
     fnm use 22 && \
     echo "test npm config " && \
     pnpm config list && pnpm i -g @tarojs/cli
 
-# 最后切换回来，在启动容器时需要用root权限更改目录权限，然后再用gosu切换jenkins用户执行bootstrap.sh
+# Switch back to root user for permission changes
 USER root
 
-# 用bash跑就不用加执行权限了
+# Run entry point script using bash (no need for execution permissions)
 CMD bash /scripts/entrypoint.sh
 
 VOLUME ["/scripts/pnpm_store"]

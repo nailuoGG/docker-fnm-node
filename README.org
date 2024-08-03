@@ -3,6 +3,7 @@
 
 ** use case
 
+Primarily used in frontend development for debugging and building, providing a consistent compilation environment across different devices.
 
 ** quick start
 
@@ -12,7 +13,6 @@ build
 #+begin_src shell
 sudo docker build  --tag fed-docker-fnm .
 #+end_src
-
 
 use
 
