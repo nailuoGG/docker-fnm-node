@@ -3,6 +3,7 @@ MAINTAINER nailuoGG <nailuogg@gmail.com>
 
 SHELL ["/bin/bash", "-c"]
 
+RUN sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
 # 安装gosu工具，用于切换到用户来执行命令 # https://github.com/tianon/gosu/blob/master/INSTALL.md
 RUN set -eux; \
   apt-get update; \
@@ -40,7 +41,7 @@ COPY entrypoint.sh /scripts/entrypoint.sh
 #设置权限
 RUN chown -R jenkins:jenkins /app && \
     chown -R jenkins:jenkins /config && \
-    chown -R jenkins:jenkins /scripts \
+    chown -R jenkins:jenkins /scripts
 
 # 切换到Jenkins用户，防止
 USER jenkins
@@ -63,20 +64,18 @@ WORKDIR /app
 # 安装pnpm
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" PNPM_VERSION="${PNPM_VERSION}" bash - && \
     mkdir -p /scripts/pnpm_store && \
-    pnpm config set store-dir /scripts/pnpm_store \
+    pnpm config set store-dir /scripts/pnpm_store
 
 # 使用fnm安装node的多个版本，想要啥版本自己加
 RUN eval "$(fnm env)" && \
-    fnm install 14 && fnm install 22 && \
-    fnm use 14
+    fnm install 14 && fnm install 22
 
 # 尝试安装全局工具
-# 该工具安装耗时2~5分钟以上，这里需要将小程序上传工具打包到镜像里，避免每次运行Jenkins打包都重复安装
 RUN cd ~/&& pwd && ls -la &&  \
     eval "$(fnm env)" &&  \
+    fnm use 22 && \
     echo "test npm config " && \
-    npm config list && npm i -g @tarojs/cli && \
-    npm install -g nrm
+    pnpm config list && pnpm i -g @tarojs/cli
 
 # 最后切换回来，在启动容器时需要用root权限更改目录权限，然后再用gosu切换jenkins用户执行bootstrap.sh
 USER root
