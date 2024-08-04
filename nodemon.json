@@ -1,0 +1,6 @@
+{
+  "watch": ["./**/*","Dockerfile"],
+  "ext": "*.sh",
+  "delay": 2500,
+  "exec": "DOCKER_BUILDKIT=1 docker buildx build --tag fed-build --network host  ~/Code/nailuoGG/docker-fnm-node/docker-fnm-node --platform linux"
+}

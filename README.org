@@ -6,6 +6,9 @@
 Primarily used in frontend development for debugging and building, providing a consistent compilation environment across different devices.
 
 ** quick start
+:PROPERTIES:
+:ID:       e10447f1-0402-464b-8c1a-17904aa830bc
+:END:
 
 
 build

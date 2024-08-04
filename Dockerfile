@@ -1,6 +1,8 @@
 FROM ubuntu:22.04
-MAINTAINER nailuoGG <nailuogg@gmail.com>
+LABEL org.opencontainers.image.authors="nailuoGG <nailuogg@gmail.com>"
 
+# 设置默认shell
+#
 SHELL ["/bin/bash", "-c"]
 
 RUN sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
@@ -48,11 +50,16 @@ RUN chown -R jenkins:jenkins /app && \
     chown -R jenkins:jenkins /config && \
     chown -R jenkins:jenkins /scripts
 
+# thanks to BuildKit
+RUN --mount=type=cache,target=/config/.fnm,id=npm_cache sharing=locked  \
+    chown -R jenkins:jenkins /config/.fnm && \
+    echo "Permission granted to jenkins user.1"
+
 # Switch to Jenkins user to prevent issues
 USER jenkins
 
 # Install fnm and manage node versions
-RUN bash /scripts/fnm-install.sh -d /scripts/.fnm
+RUN --mount=type=cache,target=/config/.fnm,id=npm_cache sharing=locked bash /scripts/fnm-install.sh -d /scripts/.fnm
 
 ENV PNPM_VERSION=7.33.5 \
  FNM_NODE_DIST_MIRROR='https://mirrors.aliyun.com/nodejs-release/' \
@@ -71,13 +78,15 @@ RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(whic
     mkdir -p /scripts/pnpm_store && \
     pnpm config set store-dir /scripts/pnpm_store
 
+
 # Install multiple node versions using fnm
 RUN eval "$(fnm env)" && \
     fnm install 14 && fnm install 22
 
+RUN cd ~/&& pwd && ls -la
+
 # Try to install global tools
-RUN cd ~/&& pwd && ls -la &&  \
-    eval "$(fnm env)" &&  \
+RUN eval "$(fnm env)" &&  \
     fnm use 22 && \
     echo "test npm config " && \
     pnpm config list && pnpm i -g @tarojs/cli

@@ -13,8 +13,6 @@ chown -R jenkins:jenkins /app
 chown -R jenkins:jenkins /config
 chown -R jenkins:jenkins /scripts
 
-usermod -a -G root jenkins
-
 # 配置启动文件
 file_path="/app/bootstrap.sh"
 
